@@ -173,6 +173,21 @@ date parts and post name will be made and an index.html will be placed in the
 leaf directory resulting in URLs like 2008/11/17/blogging-like-a-hacker/.
 
   $ jekyll --permalink [date|none|pretty]
+  
+h3. Permalink Date Format
+
+By default, unless you set the --permalink option to 'none', permalinks begin
+with the date in a 'YYYY/MM/DD' format.
+
+To customize this format, pass --permalink-date a strftime type format string.
+Please note that only a date is read from the filename, not a time, so there
+would be little point in including things like the hour.
+
+  $ jekyll --permalink-date [format string]
+  
+For example, to use only the year and month in the slug:
+
+  $ jekyll --permalink-date %Y/%m
 
 h2. Configuration File
 

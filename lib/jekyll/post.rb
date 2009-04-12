@@ -93,7 +93,7 @@ module Jekyll
       else
         prefix = self.categories.empty? ? '' : '/' + self.categories.join('/')
         if [:date, :pretty].include?(self.site.permalink_style)
-          prefix + date.strftime("/%Y/%m/%d/")
+          prefix + date.strftime(self.site.permalink_date || "/%Y/%m/%d/")
         else
           prefix + '/'
         end

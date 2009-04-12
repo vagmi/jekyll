@@ -51,6 +51,10 @@ opts = OptionParser.new do |opts|
   opts.on("--permalink [TYPE]", "Use 'date' (default) for YYYY/MM/DD") do |style|
     options['permalink'] = style unless style.nil?
   end
+  
+  opts.on("--permalink-date [FORMAT]", 'A strftime type format string. No times. (default format %Y/%m/%d)') do |format|
+    options['permalink_date'] = format unless format.nil?
+  end
 
   opts.on("--version", "Display current version") do
     puts "Jekyll " + Jekyll.version
