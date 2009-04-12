@@ -45,6 +45,8 @@ module Jekyll
       self.data = self.site.post_defaults.dup
       self.read_yaml(@base, name)
 
+      extract_title_from_first_header
+
       if self.data.has_key?('published') && self.data['published'] == false
         self.published = false
       else
@@ -186,6 +188,21 @@ module Jekyll
       File.open(path, 'w') do |f|
         f.write(self.output)
       end
+    end
+    
+    # Attempt to extract title from topmost header.
+    #
+    # Returns <String>
+    def extract_title_from_first_header
+      # Done before the transformation to HTML, or it won't go into <title>s.
+      self.data["title"] ||=
+        case content_type
+        when 'textile'
+          self.content[/\A\s*h\d\.\s*(.+)/, 1]               # h1. Header
+        when 'markdown'
+          self.content[/\A\s*#+\s*(.+)\s*#*$/, 1] ||         # "# Header"
+          self.content[/\A\s*(\S.*)\r?\n\s*(-+|=+)\s*$/, 1]  # "Header\n====="
+        end
     end
 
     # Convert this post into a Hash for use in Liquid templates.
