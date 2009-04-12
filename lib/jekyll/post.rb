@@ -42,6 +42,7 @@ module Jekyll
       self.topics = parts.size > 1 ? parts[0..-2] : []
 
       self.process(name)
+      self.data = self.site.post_defaults.dup
       self.read_yaml(@base, name)
 
       if self.data.has_key?('published') && self.data['published'] == false

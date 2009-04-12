@@ -238,6 +238,15 @@ Parameters set in a configuration file override the default values. Parameters
 set using command line options override both the default values and those set
 in a configuration file.
 
+Additionally, you can set defaults for the post data blocks. For example, you
+can set the default layout for posts, so you don't have to specify it in every
+post:
+
+  post_defaults:
+    layout: post
+    
+Any values set in the actual post will override these defaults.
+
 h2. Data
 
 Jekyll traverses your site looking for files to process. Any files with YAML
@@ -329,6 +338,9 @@ h3. Predefined Global Variables
     If set, this specifies the layout file to use. Use the layout file
     name without file extension. Layout files must be placed in the
     <code>_layouts</code> directory.
+    
+    A default layout for posts can be set in the configuration file.
+    See above.
 
 h3. Predefined Post Variables
 

@@ -2,7 +2,8 @@ module Jekyll
 
   class Site
     attr_accessor :config, :layouts, :posts, :categories
-    attr_accessor :source, :dest, :lsi, :pygments, :permalink_style, :permalink_date, :sass
+    attr_accessor :source, :dest, :lsi, :pygments, :permalink_style, :permalink_date,
+                  :sass, :post_defaults
 
     # Initialize the site
     #   +config+ is a Hash containing site configurations details
@@ -17,6 +18,7 @@ module Jekyll
       self.pygments        = config['pygments']
       self.permalink_style = config['permalink'].to_sym
       self.permalink_date  = config['permalink_date'] && config['permalink_date'].sub(%r{\A/?(.*)/?\Z}, '/\1/')
+      self.post_defaults   = config['post_defaults'] || {}
 
       self.reset
       self.setup
