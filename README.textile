@@ -53,6 +53,12 @@ filename is used to construct the URL in the generated site. The example post,
 for instance, ends up at
 <code>http://tom.preston-werner.com/2008/11/17/blogging-like-a-hacker.html</code>.
 
+Jekyll also supports specifying the post time in the filename. The format is e.g.
+'2009-04-13_23-45-my-post.html'. Note that the time is prefixed by an underscore,
+not a dash, so post slugs starting with numbers won't be parsed incorrectly.
+Times in the filename must be on a 24-hour clock. Times and dates are treated by
+Jekyll as local time.
+
 Categories for posts are derived from the directory structure the posts were
 found within. A post that appears in the directory foo/bar/_posts is placed in
 the categories 'foo' and 'bar'. By selecting posts from particular categories
@@ -180,8 +186,6 @@ By default, unless you set the --permalink option to 'none', permalinks begin
 with the date in a 'YYYY/MM/DD' format.
 
 To customize this format, pass --permalink-date a strftime type format string.
-Please note that only a date is read from the filename, not a time, so there
-would be little point in including things like the hour.
 
   $ jekyll --permalink-date [format string]
   
@@ -274,7 +278,7 @@ h3. Post
     e.g. /2008/12/14/my-post.html
 
   post.date
-    The Date assigned to the Post.
+    The Date (actually a Time object) assigned to the Post.
 
   post.id
     An identifier unique to the Post (useful in RSS feeds).
@@ -328,6 +332,12 @@ h3. Predefined Post Variables
   published
     Set to false if you don't want a post to show up when the site is 
     generated.
+    
+  time
+    If you want posts to have a time, you can set this to e.g. '23:45' or
+    '11:45 pm'. This overrides any time specified in the filename like
+    '2009-04-12_23-44-my-post.html'. Note that you must quote the time:
+      time: "23:45"
 
   category/categories
     Instead of placing posts inside of folders, you can specify one or more
