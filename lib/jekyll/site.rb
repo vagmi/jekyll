@@ -2,7 +2,7 @@ module Jekyll
 
   class Site
     attr_accessor :config, :layouts, :posts, :categories
-    attr_accessor :source, :dest, :lsi, :pygments, :permalink_style, :permalink_date
+    attr_accessor :source, :dest, :lsi, :pygments, :permalink_style, :permalink_date, :sass
 
     # Initialize the site
     #   +config+ is a Hash containing site configurations details
@@ -31,6 +31,16 @@ module Jekyll
     def setup
       # Check to see if LSI is enabled.
       require 'classifier' if self.lsi
+      
+      if self.config['sass']
+        begin
+          require 'sass'
+          self.sass = true
+          puts 'Using Sass for CSS generation'
+        rescue LoadError
+          puts 'You must have the haml gem installed first'
+        end
+      end
 
       # Set the Markdown interpreter (and Maruku self.config, if necessary)
       case self.config['markdown']
@@ -92,6 +102,7 @@ module Jekyll
       self.reset
       self.read_layouts
       self.transform_pages
+      self.transform_sass if self.sass
       self.write_posts
     end
 
@@ -192,6 +203,28 @@ module Jekyll
             end
           end
         end
+      end
+    end
+
+    # Transform all *.sass files from <dest> to css with the same name
+    # and delete source sass files.
+    # Returns nothing
+    def transform_sass(dir = '')
+      base = File.join(self.source, dir)
+      entries = Dir.entries(base)
+      entries = entries.reject { |e| ['.', '_'].include?(e[0..0]) }
+      directories = entries.select { |e| File.directory?(File.join(base, e)) }
+      directories.each { |d| transform_sass(File.join(dir, d)) }
+      files = entries.reject { |e| File.directory?(File.join(base, e)) }
+      files = files.select { |f| File.extname(File.join(base, f)) == ".sass" }
+      files.each do |f|
+        input = File.open(File.join(base, f), "r")
+        result = Sass::Engine.new(input.read, :style => :compact, :load_paths => base).render
+        FileUtils.mkdir_p(File.join(self.dest, dir))
+        output = File.open(File.join(self.dest, dir, f).gsub(/.sass\Z/, ".css"), "w") do |o|
+          o.write(result)
+        end
+        FileUtils.rm(File.join(self.dest, dir, f))
       end
     end
 

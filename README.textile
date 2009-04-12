@@ -150,6 +150,14 @@ compilation), you must install it (gem install rdiscount) and then you can
 have it used instead:
 
   $ jekyll --rdiscount
+  
+h3. Sass
+
+To transform all ".sass":http://github.com/nex3/haml/tree/master
+files anywhere in your file tree to CSS (e.g. '/css/site.sass' will
+generate '/css/site.css'):
+
+  $ jekyll --sass
 
 h3. Local Server
 

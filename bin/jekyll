@@ -56,6 +56,10 @@ opts = OptionParser.new do |opts|
     options['permalink_date'] = format unless format.nil?
   end
 
+  opts.on("--sass", "Use Sass from haml gem for CSS generation") do
+    options['sass'] = true
+  end
+  
   opts.on("--version", "Display current version") do
     puts "Jekyll " + Jekyll.version
     exit 0
