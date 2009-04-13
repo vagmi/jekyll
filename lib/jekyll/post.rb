@@ -45,7 +45,7 @@ module Jekyll
       self.data = self.site.post_defaults.dup
       self.read_yaml(@base, name)
 
-      extract_title_from_first_header
+      extract_title_from_first_header_or_slug
 
       if self.data.has_key?('published') && self.data['published'] == false
         self.published = false
@@ -136,10 +136,7 @@ module Jekyll
     #
     # Returns <String>
     def title
-      @title ||= begin
-        (self.data && self.data["title"]) ||
-        self.slug.split('-').select {|w| w.capitalize! || w }.join(' ')
-      end
+      self.data && self.data["title"]
     end
     
     # The post date and time
@@ -214,10 +211,10 @@ module Jekyll
       end
     end
     
-    # Attempt to extract title from topmost header.
+    # Attempt to extract title from topmost header or slug.
     #
     # Returns <String>
-    def extract_title_from_first_header
+    def extract_title_from_first_header_or_slug
       # Done before the transformation to HTML, or it won't go into <title>s.
       self.data["title"] ||=
         case content_type
@@ -227,6 +224,7 @@ module Jekyll
           self.content[/\A\s*#+\s*(.+)\s*#*$/, 1] ||         # "# Header"
           self.content[/\A\s*(\S.*)\r?\n\s*(-+|=+)\s*$/, 1]  # "Header\n====="
         end
+      self.data["title"] ||= self.slug.split('-').select {|w| w.capitalize! || w }.join(' ')
     end
 
     # Convert this post into a Hash for use in Liquid templates.
