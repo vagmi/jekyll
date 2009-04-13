@@ -43,6 +43,16 @@ module Jekyll
           puts 'You must have the haml gem installed first'
         end
       end
+      
+      if self.config['haml']
+        begin
+          require 'haml'
+          require 'ostruct'
+          puts 'Enabled Haml'
+        rescue LoadError
+          puts 'You must have the haml gem installed first'
+        end
+      end
 
       # Set the Markdown interpreter (and Maruku self.config, if necessary)
       case self.config['markdown']

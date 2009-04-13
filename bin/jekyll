@@ -60,6 +60,10 @@ opts = OptionParser.new do |opts|
     options['sass'] = true
   end
   
+  opts.on("--haml", "Enable using Haml for posts and pages") do
+    options['haml'] = true
+  end
+  
   opts.on("--version", "Display current version") do
     puts "Jekyll " + Jekyll.version
     exit 0

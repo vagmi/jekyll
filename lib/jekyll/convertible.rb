@@ -37,6 +37,10 @@ module Jekyll
       when 'markdown'
         self.ext = ".html"
         self.content = self.site.markdown(self.content)
+      when 'haml'
+        self.ext = ".html"
+        # Actually rendered in do_layout.
+        self.content = Haml::Engine.new(self.content)
       end
     end
 
@@ -50,6 +54,8 @@ module Jekyll
         return 'textile'
       when /markdown/i, /mkdn/i, /md/i
         return 'markdown'
+      when /haml/i
+        return 'haml'
       end
       return 'unknown'
     end
@@ -64,8 +70,17 @@ module Jekyll
 
       # render and transform content (this becomes the final content of the object)
       payload["content_type"] = self.content_type
-      self.content = Liquid::Template.parse(self.content).render(payload, info)
-      self.transform
+      
+      if self.content_type == "haml"
+        context = OpenStruct.new(
+          :site => OpenStruct.new(payload["site"]),
+          :page => OpenStruct.new(payload["page"]))
+        self.transform
+        self.content = self.content.render(context)
+      else
+        self.content = Liquid::Template.parse(self.content).render(payload, info)
+        self.transform
+      end
 
       # output keeps track of what will finally be written
       self.output = self.content
