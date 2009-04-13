@@ -131,6 +131,30 @@ module Jekyll
     def id
       self.dir + self.slug
     end
+    
+    # The post title
+    #
+    # Returns <String>
+    def title
+      @title ||= begin
+        (self.data && self.data["title"]) ||
+        self.slug.split('-').select {|w| w.capitalize! || w }.join(' ')
+      end
+    end
+    
+    # The post date and time
+    #
+    # Returns <Time>
+    def date
+      @date_with_time ||= begin
+        if self.data && self.data.key?("time")
+          time = Time.parse(self.data["time"])
+          Time.mktime(@date.year, @date.month, @date.day, time.hour, time.min)
+        else
+          @date
+        end
+      end
+    end
 
     # Calculate related posts.
     #
@@ -209,11 +233,7 @@ module Jekyll
     #
     # Returns <Hash>
     def to_liquid
-      if self.data.key?("time")
-        time = Time.parse(self.data["time"])
-        self.date = Time.mktime(self.date.year, self.date.month, self.date.day, time.hour, time.min)
-      end
-      { "title" => self.data["title"] || self.slug.split('-').select {|w| w.capitalize! || w }.join(' '),
+      { "title" => self.title,
         "url" => self.url,
         "date" => self.date,
         "id" => self.id,
