@@ -40,7 +40,7 @@ module Jekyll
       when 'haml'
         self.ext = ".html"
         # Actually rendered in do_layout.
-        self.content = Haml::Engine.new(self.content)
+        self.content = Haml::Engine.new(self.content, :attr_wrapper => %{"})
       end
     end
 
