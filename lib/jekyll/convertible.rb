@@ -72,9 +72,7 @@ module Jekyll
       payload["content_type"] = self.content_type
       
       if self.content_type == "haml"
-        context = OpenStruct.new(
-          :site => OpenStruct.new(payload["site"]),
-          :page => OpenStruct.new(payload["page"]))
+        context = OpenStruct.new(:site => self.site, :page => OpenStruct.new(payload["page"]))
         context.extend(HamlHelpers)
         
         self.transform
