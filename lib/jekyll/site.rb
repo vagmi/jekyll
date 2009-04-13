@@ -1,7 +1,7 @@
 module Jekyll
 
   class Site
-    attr_accessor :config, :layouts, :posts, :categories
+    attr_accessor :config, :layouts, :posts, :collated_posts, :categories
     attr_accessor :source, :dest, :lsi, :pygments, :permalink_style, :permalink_date,
                   :sass, :post_defaults
 
@@ -27,6 +27,7 @@ module Jekyll
     def reset
       self.layouts         = {}
       self.posts           = []
+      self.collated_posts  = Hash.new {|h,k| h[k] = Hash.new {|h,k| h[k] = Hash.new {|h,k| h[k] = [] } } }
       self.categories      = Hash.new { |hash, key| hash[key] = Array.new }
     end
 
@@ -161,6 +162,9 @@ module Jekyll
       end
 
       self.posts.sort!
+      self.posts.each do |post|
+        self.collated_posts[post.date.year][post.date.month][post.date.day].unshift(post)
+      end
       self.categories.values.map { |cats| cats.sort! { |a, b| b <=> a} }
     rescue Errno::ENOENT => e
       # ignore missing layout dir
