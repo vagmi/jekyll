@@ -75,6 +75,8 @@ module Jekyll
         context = OpenStruct.new(
           :site => OpenStruct.new(payload["site"]),
           :page => OpenStruct.new(payload["page"]))
+        context.extend(HamlHelpers)
+        
         self.transform
         self.content = self.content.render(context)
       else

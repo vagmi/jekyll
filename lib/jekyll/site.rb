@@ -48,6 +48,7 @@ module Jekyll
         begin
           require 'haml'
           require 'ostruct'
+          require 'jekyll/haml_helpers'
           puts 'Enabled Haml'
         rescue LoadError
           puts 'You must have the haml gem installed first'
