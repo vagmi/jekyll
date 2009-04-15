@@ -1,7 +1,7 @@
 module Jekyll
 
   class Site
-    attr_accessor :config, :layouts, :posts, :collated_posts, :categories
+    attr_accessor :config, :layouts, :posts, :collated_posts, :categories, :tags
     attr_accessor :source, :dest, :lsi, :pygments, :pygments_cache, :permalink_style, :permalink_date,
                   :sass, :post_defaults
 
@@ -29,7 +29,8 @@ module Jekyll
       self.layouts         = {}
       self.posts           = []
       self.collated_posts  = Hash.new {|h,k| h[k] = Hash.new {|h,k| h[k] = Hash.new {|h,k| h[k] = [] } } }
-      self.categories      = Hash.new { |hash, key| hash[key] = Array.new }
+      self.categories      = Hash.new { |hash, key| hash[key] = [] }
+      self.tags            = Hash.new { |hash, key| hash[key] = [] }
     end
 
     def setup
@@ -159,6 +160,7 @@ module Jekyll
           if post.published
             self.posts << post
             post.categories.each { |c| self.categories[c] << post }
+            post.tags.each { |c| self.tags[c] << post }
           end
         end
       end
@@ -172,7 +174,8 @@ module Jekyll
       self.posts.each do |post|
         self.collated_posts[post.date.year][post.date.month][post.date.day].unshift(post)
       end
-      self.categories.values.map { |cats| cats.sort! { |a, b| b <=> a} }
+      self.categories.values.map { |ps| ps.sort! { |a, b| b <=> a} }
+      self.tags.values.map { |ps| ps.sort! { |a, b| b <=> a} }
     rescue Errno::ENOENT => e
       # ignore missing layout dir
     end
@@ -269,12 +272,14 @@ module Jekyll
     # Returns {"site" => {"time" => <Time>,
     #                     "posts" => [<Post>],
     #                     "categories" => [<Post>],
+    #                     "tags" => [<Post>],
     #                     "topics" => [<Post>] }}
     def site_payload
       {"site" => {
         "time" => Time.now,
         "posts" => self.posts.sort { |a,b| b <=> a },
         "categories" => post_attr_hash('categories'),
+        "tags" => post_attr_hash('tags'),
         "topics" => post_attr_hash('topics')
       }}
     end
