@@ -2,11 +2,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{jekyll}
-  s.version = "0.5.0"
+  s.version = "0.5.1"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
-  s.authors = ["Tom Preston-Werner"]
-  s.date = %q{2009-04-07}
+  s.authors = ["Tom Preston-Werner", "Henrik Nyh"]
+  s.date = %q{2009-04-15}
   s.default_executable = %q{jekyll}
   s.description = %q{Jekyll is a simple, blog aware, static site generator.}
   s.email = %q{tom@mojombo.com}
@@ -31,6 +31,7 @@ Gem::Specification.new do |s|
     "lib/jekyll/convertible.rb",
     "lib/jekyll/core_ext.rb",
     "lib/jekyll/filters.rb",
+    "lib/jekyll/haml_helpers.rb",
     "lib/jekyll/layout.rb",
     "lib/jekyll/page.rb",
     "lib/jekyll/post.rb",
