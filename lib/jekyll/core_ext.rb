@@ -24,6 +24,6 @@ end
 require 'ostruct'
 class ClosedStruct < OpenStruct
   def method_missing(symbol, *args)
-    @table.has_key?(symbol) ? super : raise(NoMethodError, "undefined method `#{symbol}' for #{self}")
+    raise(NoMethodError, "undefined method `#{symbol}' for #{self}")
   end
 end
