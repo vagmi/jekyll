@@ -172,8 +172,8 @@ To transform ".haml":http://github.com/nex3/haml/tree/master files to HTML
 
   $ jekyll --haml
 
-Note that files must have a YAML metadata block at the top to be converted,
-and that Haml cannot currently be used for layouts -- only posts and pages.
+Note that pages and posts must have a YAML metadata block at the top to be
+converted. Layouts don't need to.
 
 Haml content is intentionally not filtered, so you can use any Ruby code.
 
@@ -269,9 +269,8 @@ h2. Data
 
 Jekyll traverses your site looking for files to process. Any files with YAML
 front matter (see below) are subject to processing. For each of these files,
-Jekyll makes a variety of data available to the pages via Haml (regular pages
-only) or the Liquid templating system. The following is a reference of the
-available data.
+Jekyll makes a variety of data available to the pages via Haml or the Liquid
+Liquid templating system. The following is a reference of the available data.
 
 h3. Global
 

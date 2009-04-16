@@ -89,7 +89,17 @@ module Jekyll
       layout = layouts[self.data["layout"]]
       while layout
         payload = payload.deep_merge({"content" => self.output, "page" => layout.data})
-        self.output = Liquid::Template.parse(layout.content).render(payload, info)
+        
+        if site.config['haml'] && layout.content.is_a?(Haml::Engine)
+          context = OpenStruct.new(
+            :page => OpenStruct.new(payload["page"]),
+            :site => OpenStruct.new(payload["site"]),
+            :content => payload["content"])
+          context.extend(HamlHelpers)
+          self.output = layout.content.render(context)
+        else
+          self.output = Liquid::Template.parse(layout.content).render(payload, info)
+        end
 
         layout = layouts[layout.data["layout"]]
       end
