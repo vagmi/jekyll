@@ -50,8 +50,9 @@ module Jekyll
       if self.config['haml']
         begin
           require 'haml'
-          require 'ostruct'
           require 'jekyll/haml_helpers'
+          helpers = File.join(source, '_helpers.rb')
+          require helpers if File.exist?(helpers)
           puts 'Enabled Haml'
         rescue LoadError
           puts 'You must have the haml gem installed first'

@@ -59,6 +59,18 @@ module Jekyll
       end
       return 'unknown'
     end
+    
+    # Sets up a context for Haml and renders in it. The context has accessors
+    # matching the passed-in hash, e.g. "site", "page" and "content", and has
+    # helper modules mixed in.
+    #
+    # Returns String.
+    def render_haml_in_context(haml_engine, params={})
+      context = ClosedStruct.new(params)
+      context.extend(HamlHelpers)
+      context.extend(::Helpers) if defined?(::Helpers)
+      haml_engine.render(context)
+    end
 
     # Add any necessary layouts to this convertible document
     #   +layouts+ is a Hash of {"name" => "layout"}
@@ -72,11 +84,10 @@ module Jekyll
       payload["content_type"] = self.content_type
       
       if self.content_type == "haml"
-        context = OpenStruct.new(:site => self.site, :page => OpenStruct.new(payload["page"]))
-        context.extend(HamlHelpers)
-        
         self.transform
-        self.content = self.content.render(context)
+        self.content = render_haml_in_context(self.content,
+          :site => self.site,
+          :page => ClosedStruct.new(payload["page"]))
       else
         self.content = Liquid::Template.parse(self.content).render(payload, info)
         self.transform
@@ -91,12 +102,10 @@ module Jekyll
         payload = payload.deep_merge({"content" => self.output, "page" => layout.data})
         
         if site.config['haml'] && layout.content.is_a?(Haml::Engine)
-          context = OpenStruct.new(
-            :page => OpenStruct.new(payload["page"]),
-            :site => OpenStruct.new(payload["site"]),
+          self.output = render_haml_in_context(layout.content, 
+            :site => ClosedStruct.new(payload["site"]),
+            :page => ClosedStruct.new(payload["page"]),
             :content => payload["content"])
-          context.extend(HamlHelpers)
-          self.output = layout.content.render(context)
         else
           self.output = Liquid::Template.parse(layout.content).render(payload, info)
         end

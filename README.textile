@@ -177,6 +177,18 @@ converted. Layouts don't need to.
 
 Haml content is intentionally not filtered, so you can use any Ruby code.
 
+If you want to define methods you can call from your Haml files, create
+a _helpers.rb file in the root of your blog and put the methods there,
+inside a module named Helpers.
+
+Jekyll provides some helpers out of the box:
+
+  h(string)
+    HTML entity-escapes the input string.
+    
+  link_to(text, url)
+    Creates a link to the URL with the linked text (or markup).
+
 h3. Local Server
 
 When previewing complex sites locally, simply opening the site in a web 
