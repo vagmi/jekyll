@@ -155,6 +155,13 @@ module Jekyll
         end
       end
     end
+    
+    # The path to the post file.
+    #
+    # Returns <String>
+    def path
+      File.expand_path(File.join(@base, @name))
+    end
 
     # Calculate related posts.
     #
@@ -238,6 +245,7 @@ module Jekyll
         "url" => self.url,
         "date" => self.date,
         "id" => self.id,
+        "path" => self.path,
         "topics" => self.topics,
         "categories" => self.categories,
         "tags" => self.tags,
