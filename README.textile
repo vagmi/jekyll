@@ -217,6 +217,15 @@ date parts and post name will be made and an index.html will be placed in the
 leaf directory resulting in URLs like 2008/11/17/blogging-like-a-hacker/.
 
   $ jekyll --permalink [date|none|pretty]
+
+Another way to leave off the .html is to configure Apache with 'Options +MultiViews'.
+Just link to pages without the extension (and without a trailing slash, like '/about').
+Then tell Jekyll not to add '.html' when linking to blog posts, like so:
+
+  $ jekyll --multiviews
+  
+Note that this has no effect with '--permalink pretty' since that makes an index.html
+file in a directory.
   
 h3. Permalink Date Format
 

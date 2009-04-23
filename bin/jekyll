@@ -55,7 +55,11 @@ opts = OptionParser.new do |opts|
   opts.on("--permalink [TYPE]", "Use 'date' (default) for YYYY/MM/DD") do |style|
     options['permalink'] = style unless style.nil?
   end
-  
+
+  opts.on("--multiviews", "Don't use .html in links since Apache has 'Options +MultiViews'") do |style|
+    options['multiviews'] = true
+  end
+
   opts.on("--permalink-date [FORMAT]", 'A strftime type format string. No times. (default format %Y/%m/%d)') do |format|
     options['permalink_date'] = format unless format.nil?
   end

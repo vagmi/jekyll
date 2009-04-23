@@ -123,7 +123,7 @@ module Jekyll
     #
     # Returns <String>
     def url
-      ext = self.site.permalink_style == :pretty ? '' : '.html'
+      ext = (site.permalink_style == :pretty || site.config['multiviews']) ? '' : '.html'
       permalink || self.id + ext
     end
 
@@ -214,6 +214,9 @@ module Jekyll
       if self.site.permalink_style == :pretty
         FileUtils.mkdir_p(path)
         path = File.join(path, "index.html")
+      else
+        # Ensure .html extension even if URL doesn't have it, e.g. with --multiviews.
+        path.sub!(/(\.html)?$/, '.html')
       end
 
       File.open(path, 'w') do |f|
