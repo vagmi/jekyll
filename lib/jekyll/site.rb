@@ -166,15 +166,14 @@ module Jekyll
         end
       end
 
+      self.posts.sort!
+
       # second pass renders each post now that full site payload is available
       self.posts.each do |post|
         post.render(self.layouts, site_payload)
-      end
-
-      self.posts.sort!
-      self.posts.each do |post|
         self.collated_posts[post.date.year][post.date.month][post.date.day].unshift(post)
       end
+
       self.categories.values.map { |ps| ps.sort! { |a, b| b <=> a} }
       self.tags.values.map { |ps| ps.sort! { |a, b| b <=> a} }
     rescue Errno::ENOENT => e
