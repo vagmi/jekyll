@@ -2,7 +2,7 @@ module Jekyll
 
   class Site
     attr_accessor :config, :layouts, :posts, :collated_posts, :categories, :tags
-    attr_accessor :source, :dest, :lsi, :pygments, :pygments_cache, :permalink_style, :permalink_date,
+    attr_accessor :source, :dest, :lsi, :pygments, :pygments_cache, :permalink_style,
                   :sass, :post_defaults
 
     # Initialize the site
@@ -18,7 +18,6 @@ module Jekyll
       self.pygments        = config['pygments']
       self.pygments_cache  = config['pygments_cache']
       self.permalink_style = config['permalink'].to_sym
-      self.permalink_date  = config['permalink_date'] && config['permalink_date'].sub(%r{\A/?(.*)/?\Z}, '/\1/')
       self.post_defaults   = config['post_defaults'] || {}
 
       self.reset

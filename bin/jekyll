@@ -10,7 +10,7 @@ Basic Command Line Usage:
   jekyll <path to write generated site>                    # . -> <path>
   jekyll <path to source> <path to write generated site>   # <path> -> <path>
 
-  Configuration is read from '<source>/_config.yaml' but can be overriden
+  Configuration is read from '<source>/_config.yml' but can be overriden
   using the following options:
 
 HELP
@@ -58,10 +58,6 @@ opts = OptionParser.new do |opts|
 
   opts.on("--multiviews", "Don't use .html in links since Apache has 'Options +MultiViews'") do |style|
     options['multiviews'] = true
-  end
-
-  opts.on("--permalink-date [FORMAT]", 'A strftime type format string. No times. (default format %Y/%m/%d)') do |format|
-    options['permalink_date'] = format unless format.nil?
   end
 
   opts.on("--sass", "Use Sass from haml gem for CSS generation") do

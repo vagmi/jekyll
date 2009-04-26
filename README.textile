@@ -1,5 +1,9 @@
 h1. Jekyll
 
+By Tom Preston-Werner, Nick Quaranto, and many awesome contributors!
+
+h2. Description
+
 Jekyll is a simple, blog aware, static site generator. It takes a template
 directory (representing the raw form of a website), runs it through Textile or
 Markdown and Liquid converters, and spits out a complete, static website
@@ -226,19 +230,6 @@ Then tell Jekyll not to add '.html' when linking to blog posts, like so:
   
 Note that this has no effect with '--permalink pretty' since that makes an index.html
 file in a directory.
-  
-h3. Permalink Date Format
-
-By default, unless you set the --permalink option to 'none', permalinks begin
-with the date in a 'YYYY/MM/DD' format.
-
-To customize this format, pass --permalink-date a strftime type format string.
-
-  $ jekyll --permalink-date [format string]
-  
-For example, to use only the year and month in the slug:
-
-  $ jekyll --permalink-date %Y/%m
 
 h2. Configuration File
 
@@ -630,7 +621,7 @@ your changes merged back into core is as follows:
 # Do not change the version number, I will do that on my end
 # If necessary, rebase your commits into logical chunks, without errors
 # Push the branch up to GitHub
-# Send me (mojombo) a pull request for your branch
+# Create an issue on mojombo/grit with a description and link to your branch
 
 h2. License
 

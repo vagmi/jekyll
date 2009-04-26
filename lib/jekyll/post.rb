@@ -20,9 +20,12 @@ module Jekyll
       name =~ MATCHER
     end
 
-    attr_accessor :site
-    attr_accessor :date, :slug, :ext, :categories, :tags, :topics, :published
-    attr_accessor :data, :content, :output
+    attr_accessor :site, :date, :slug, :ext, :topics, :tags, :published, :data, :content, :output
+    attr_writer :categories
+    
+    def categories
+      @categories ||= []
+    end
 
     # Initialize this Post instance.
     #   +site+ is the Site
@@ -97,16 +100,7 @@ module Jekyll
     #
     # Returns <String>
     def dir
-      if permalink
-        permalink.to_s.split("/")[0..-2].join("/") + '/'
-      else
-        prefix = self.categories.empty? ? '' : '/' + self.categories.join('/')
-        if [:date, :pretty].include?(self.site.permalink_style)
-          prefix + date.strftime(self.site.permalink_date || "/%Y/%m/%d/")
-        else
-          prefix + '/'
-        end
-      end
+      File.dirname(generated_path)
     end
 
     # The full path and filename of the post.
@@ -118,13 +112,43 @@ module Jekyll
       self.data && self.data['permalink']
     end
 
-    # The generated relative url of this post
+    def template
+      case self.site.permalink_style
+      when :pretty
+        "/:categories/:year/:month/:day/:title"
+      when :none
+        "/:categories/:title.html"
+      when :date
+        "/:categories/:year/:month/:day/:title.html"
+      else
+        self.site.permalink_style.to_s
+      end
+    end
+
+    # The generated relative path of this post
     # e.g. /2008/11/05/my-awesome-post.html
     #
     # Returns <String>
+    def generated_path
+      return permalink if permalink
+
+      @generated_path ||= {
+        "year"       => date.strftime("%Y"),
+        "month"      => date.strftime("%m"),
+        "day"        => date.strftime("%d"),
+        "title"      => slug,
+        "categories" => categories.sort.join('/')
+      }.inject(template) { |result, token|
+        result.gsub(/:#{token.first}/, token.last)
+      }.gsub("//", "/")
+    end
+    
+    # The generated relative url of this post
+    # e.g. /2008/11/05/my-awesome-post
+    #
+    # Returns <String>
     def url
-      ext = (site.permalink_style == :pretty || site.config['multiviews']) ? '' : '.html'
-      permalink || self.id + ext
+      site.config['multiviews'] ? generated_path.sub(/\.html$/, '') : generated_path
     end
 
     # The UID for this post (useful in feeds)
@@ -132,7 +156,7 @@ module Jekyll
     #
     # Returns <String>
     def id
-      self.dir + self.slug
+      File.join(self.dir, self.slug)
     end
     
     # The post title
@@ -209,14 +233,11 @@ module Jekyll
     def write(dest)
       FileUtils.mkdir_p(File.join(dest, dir))
 
-      path = File.join(dest, self.url)
+      path = File.join(dest, self.generated_path)
 
-      if self.site.permalink_style == :pretty
+      if template[/\.html$/].nil?
         FileUtils.mkdir_p(path)
         path = File.join(path, "index.html")
-      else
-        # Ensure .html extension even if URL doesn't have it, e.g. with --multiviews.
-        path.sub!(/(\.html)?$/, '.html')
       end
 
       File.open(path, 'w') do |f|
