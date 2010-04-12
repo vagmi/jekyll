@@ -23,6 +23,9 @@ end
 
 require 'ostruct'
 class ClosedStruct < OpenStruct
+  def get_binding
+    binding
+  end
   def method_missing(symbol, *args)
     raise(NoMethodError, "undefined method `#{symbol}' for #{self}")
   end

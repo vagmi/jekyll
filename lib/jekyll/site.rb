@@ -57,6 +57,15 @@ module Jekyll
           puts 'You must have the haml gem installed first'
         end
       end
+
+
+      if self.config['erb']
+	require 'erb'
+	require 'jekyll/erb_helpers'
+	helpers = File.join(source, '_helpers.rb')
+	require helpers if File.exist?(helpers)
+	puts 'Enabled ERB'
+      end
       
       if self.pygments_cache
         require 'fileutils'
@@ -275,6 +284,7 @@ module Jekyll
     #                     "topics" => [<Post>] }}
     def site_payload
       {"site" => {
+	"source" => self.source,
         "time" => Time.now,
         "posts" => self.posts.sort { |a,b| b <=> a },
         "categories" => post_attr_hash('categories'),

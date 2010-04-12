@@ -68,6 +68,10 @@ opts = OptionParser.new do |opts|
     options['haml'] = true
   end
   
+  opts.on("--erb", "Enable using ERB for posts and pages") do
+    options['erb'] = true
+  end
+
   opts.on("--version", "Display current version") do
     puts "Jekyll " + Jekyll.version
     exit 0

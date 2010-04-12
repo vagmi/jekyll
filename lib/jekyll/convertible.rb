@@ -41,13 +41,17 @@ module Jekyll
         self.ext = ".html"
         # Actually rendered in do_layout.
         self.content = Haml::Engine.new(self.content, :attr_wrapper => %{"})
+      when 'erb'
+        self.ext = ".html"
+        # Actually rendered in do_layout.
+        self.content = ERB.new(self.content)
       end
     end
 
     # Determine which formatting engine to use based on this convertible's
     # extension
     #
-    # Returns one of :textile, :markdown or :unknown
+    # Returns one of :textile, :markdown, :haml, :erb or :unknown
     def content_type
       case self.ext[1..-1]
       when /textile/i
@@ -56,6 +60,8 @@ module Jekyll
         return 'markdown'
       when /haml/i
         return 'haml'
+      when /erb/i
+        return 'erb'
       end
       return 'unknown'
     end
@@ -70,6 +76,18 @@ module Jekyll
       context.extend(HamlHelpers)
       context.extend(::Helpers) if defined?(::Helpers)
       haml_engine.render(context)
+    end
+
+    # Sets up a context for Haml and renders in it. The context has accessors
+    # matching the passed-in hash, e.g. "site", "page" and "content", and has
+    # helper modules mixed in.
+    #
+    # Returns String.
+    def render_erb_in_context(erb_engine, params={})
+      context = ClosedStruct.new(params)
+      context.extend(Jekyll::ERBHelpers)
+      context.extend(::Helpers) if defined?(::Helpers)
+      erb_engine.result(context.get_binding)
     end
 
     # Add any necessary layouts to this convertible document
@@ -88,6 +106,11 @@ module Jekyll
         self.content = render_haml_in_context(self.content,
           :site => self.site,
           :page => ClosedStruct.new(payload["page"]))
+      elsif self.content_type == "erb"
+        self.transform
+        self.content = render_erb_in_context(self.content,
+          :site => self.site,
+          :page => ClosedStruct.new(payload["page"]))
       else
         self.content = Liquid::Template.parse(self.content).render(payload, info)
         self.transform
@@ -103,6 +126,12 @@ module Jekyll
         
         if site.config['haml'] && layout.content.is_a?(Haml::Engine)
           self.output = render_haml_in_context(layout.content, 
+            :site => ClosedStruct.new(payload["site"]),
+            :page => ClosedStruct.new(payload["page"]),
+            :content => payload["content"])
+        elsif site.config['erb'] && layout.content.is_a?(ERB)
+	  puts 'processing erb layout'
+          self.output = render_erb_in_context(layout.content, 
             :site => ClosedStruct.new(payload["site"]),
             :page => ClosedStruct.new(payload["page"]),
             :content => payload["content"])
