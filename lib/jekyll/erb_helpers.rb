@@ -4,12 +4,11 @@ module Jekyll
   module ERBHelpers
     def erb(path,params={})
       result="dunce"
+      @context||=OpenStruct.new({:site=>site,:page=>page}.merge(params[:locals]||{}))
+      @context.extend(Jekyll::ERBHelpers)
+      @context.extend(::Helpers) if defined?(::Helpers)
       template=ERB.new(File.read(File.join(site.source,"_partials","#{path.to_s}.erb")))
-      if(params[:locals])
-	result=template.result(ClosedStruct.new(params[:locals]).get_binding)
-      else
-	result=template.result
-      end
+      result=template.result(@context.get_binding)
       result
     end
 
