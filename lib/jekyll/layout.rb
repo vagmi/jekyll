@@ -5,7 +5,7 @@ module Jekyll
 
     attr_accessor :site
     attr_accessor :ext
-    attr_accessor :data, :content
+    attr_accessor :data, :content, :name
 
     # Initialize a new Layout.
     #   +site+ is the Site

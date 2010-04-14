@@ -22,10 +22,19 @@ class Hash
 end
 
 require 'ostruct'
-class ClosedStruct < OpenStruct
+
+class OpenStruct
+  def merge!(params)
+    params.keys.each do |k|
+      self.send("#{k}=",params[k])
+    end
+  end
   def get_binding
     binding
   end
+end
+
+class ClosedStruct < OpenStruct
   def method_missing(symbol, *args)
     raise(NoMethodError, "undefined method `#{symbol}' for #{self}")
   end

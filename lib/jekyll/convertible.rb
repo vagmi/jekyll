@@ -84,10 +84,16 @@ module Jekyll
     #
     # Returns String.
     def render_erb_in_context(erb_engine, params={})
-      context = ClosedStruct.new(params)
+      context = erb_context(params)
       context.extend(Jekyll::ERBHelpers)
       context.extend(::Helpers) if defined?(::Helpers)
       erb_engine.result(context.get_binding)
+    end
+
+    def erb_context(params={})
+      @context ||= OpenStruct.new
+      @context.merge! params
+      @context
     end
 
     # Add any necessary layouts to this convertible document
@@ -130,7 +136,7 @@ module Jekyll
             :page => ClosedStruct.new(payload["page"]),
             :content => payload["content"])
         elsif site.config['erb'] && layout.content.is_a?(ERB)
-	  puts 'processing erb layout'
+	  puts "processing erb layout #{layout.name}"
           self.output = render_erb_in_context(layout.content, 
             :site => ClosedStruct.new(payload["site"]),
             :page => ClosedStruct.new(payload["page"]),
