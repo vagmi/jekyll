@@ -13,18 +13,20 @@ module Jekyll
     end
 
     def content_for(key, &block)
-      content_blocks[key] << block
-    end
 
-    def yield_content(key, *args)
       @old_content||=""
       pos=@old_content.length
-      result=content_blocks[key].map do |c|
-	c.call(*args)
-      end.join
+      result=block.call(*args)
       data=result[pos..-1]
       @old_content=result
       data
+
+
+      content_blocks[key] << data
+    end
+
+    def yield_content(key, *args)
+      content_blocks[key].join
     end
 
     private
